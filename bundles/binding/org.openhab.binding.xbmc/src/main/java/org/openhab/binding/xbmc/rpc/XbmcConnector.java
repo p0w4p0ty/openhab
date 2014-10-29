@@ -13,13 +13,19 @@ import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.binding.xbmc.internal.XbmcHost;
+import org.openhab.binding.xbmc.rpc.api.model.video.details.Movie;
 import org.openhab.binding.xbmc.rpc.calls.ApplicationGetProperties;
 import org.openhab.binding.xbmc.rpc.calls.ApplicationSetVolume;
 import org.openhab.binding.xbmc.rpc.calls.FilesPrepareDownload;
@@ -34,18 +40,14 @@ import org.openhab.binding.xbmc.rpc.calls.SystemHibernate;
 import org.openhab.binding.xbmc.rpc.calls.SystemReboot;
 import org.openhab.binding.xbmc.rpc.calls.SystemShutdown;
 import org.openhab.binding.xbmc.rpc.calls.SystemSuspend;
+import org.openhab.binding.xbmc.rpc.calls.videoLibrary.EpisodesByTVShowName;
+import org.openhab.binding.xbmc.rpc.calls.videoLibrary.MoviesByTitle;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StringType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
@@ -377,12 +379,169 @@ public class XbmcConnector {
 		reboot.execute();
 	}
 
-	public void playerOpen(String file) {
+	public void playerOpenFile(String file) {
 		final PlayerOpen playeropen = new PlayerOpen(client, httpUri);		
 		playeropen.setFile(file);
 		playeropen.execute();
 	}
+	
+	public void playerOpen(String params) {
+		final PlayerOpen playeropen = new PlayerOpen(client, httpUri);		
+		playeropen.setParams(params);
+		playeropen.execute();
+	}
+	
+	public void playerOpenMovie(int movieid) {
+		final PlayerOpen playeropen = new PlayerOpen(client, httpUri);		
+		playeropen.setMovieid(movieid);
+		playeropen.execute();
+	}
 
+	public void playerOpenEpisode(int episodeid) {
+		final PlayerOpen playeropen = new PlayerOpen(client, httpUri);		
+		playeropen.setEpisodeid(episodeid);
+		playeropen.execute();
+	}
+	
+	public void playerOpenAlbum(int albumid) {
+		final PlayerOpen playeropen = new PlayerOpen(client, httpUri);		
+		playeropen.setAlbumid(albumid);
+		playeropen.execute();
+	}
+	
+	public void playerOpenMusicVideo(int musicvideoid) {
+		final PlayerOpen playeropen = new PlayerOpen(client, httpUri);		
+		playeropen.setMusicvideoid(musicvideoid);
+		playeropen.execute();
+	}
+	
+	public void playerOpenSong(int songid) {
+		final PlayerOpen playeropen = new PlayerOpen(client, httpUri);		
+		playeropen.setSongid(songid);
+		playeropen.execute();
+	}
+	
+	public void videoGetMovies(String title){
+		videoGetMovies(title, false);
+	}
+	
+	public void videoGetMovies(String movieTitle, final boolean play){
+		final MoviesByTitle moviesByTitle = new MoviesByTitle(client, httpUri);
+		moviesByTitle.setMovieTitle(movieTitle);
+		
+		moviesByTitle.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (moviesByTitle.getAll().size() <= 0){
+					// No movie found
+					// TODO: update result
+				} else {
+					Iterator<Movie> iterFoundMovies = moviesByTitle.getAll().iterator();
+					if (moviesByTitle.getAll().size() == 1){
+						// One movie found
+						// TODO: update result
+						if (play){
+							playerOpenMovie(iterFoundMovies.next().getMovieid());
+						}
+					} else {
+						// Many movies found
+						// TODO: update result
+						if (play){
+							//TODO: select movie
+						}
+					}
+				}
+			}
+		});
+		
+		/*
+		final VideoLibraryGetMovies videoLibraryGetMovies = new VideoLibraryGetMovies(client, httpUri);
+		videoLibraryGetMovies.setMovieTitle(title);
+		
+		videoLibraryGetMovies.execute(new Runnable() {
+			public void run() {
+				if (videoLibraryGetMovies.getNumMoviesFound() <= 0){
+					// No movie found
+					// TODO: update result
+				} else {
+					Iterator<Object> iterFoundMovies = videoLibraryGetMovies.getMoviesFound().iterator();
+					if (videoLibraryGetMovies.getNumMoviesFound() == 1){
+						// One movie found
+						Map<String, Object> movie = (Map<String, Object>) iterFoundMovies.next();
+						// TODO: update result
+						if (play){
+							int movieid = (Integer) movie.get("movieid");
+							playerOpenMovie(movieid);
+						}
+					} else {
+						// Many movies found
+						// TODO: update result
+						if (play){
+							//TODO: update 'select movie'
+						}
+					}
+				}
+			}
+		});
+		*/
+	}
+	
+	public void videoGetEpisodes(String tvshowTitle){
+		videoGetEpisodes(tvshowTitle, false);
+	}
+	
+	public void videoGetEpisodes(String tvshowTitle, final boolean play){
+		final EpisodesByTVShowName getTVShowEpisodes = new EpisodesByTVShowName(client, httpUri);
+		getTVShowEpisodes.setTvshowTitle(tvshowTitle);
+		
+		getTVShowEpisodes.execute(new Runnable() {
+			@Override
+			public void run() {
+				if (getTVShowEpisodes.getResult() != null){
+					if (getTVShowEpisodes.getAll().size() <= 0){
+						// No TV show episodes found
+						// TODO: update result
+					} else {
+						// TV show episodes found
+						// TODO: update result
+						if (play){
+							playerOpenEpisode(getTVShowEpisodes.getNextOrLast().getEpisodeid());
+						}					
+					}
+				}
+			}
+		});	
+	}
+	
+	public void videoSearch(String media){
+		videoSearch(media, false);
+	}
+	
+	public void videoSearch(final String media, final boolean play){
+		final EpisodesByTVShowName getTVShowEpisodes = new EpisodesByTVShowName(client, httpUri);
+		getTVShowEpisodes.setTvshowTitle(media);
+		
+		getTVShowEpisodes.execute(new Runnable() {
+			@Override
+			public void run() {
+				if (getTVShowEpisodes.getResult() != null){
+					if (getTVShowEpisodes.getAll().size() <= 0){
+						// No TV show episodes found
+						// TODO: update result
+						videoGetMovies(media, play);
+					} else {
+						// TV show episodes found
+						// TODO: update result
+						if (play){
+							playerOpenEpisode(getTVShowEpisodes.getNextOrLast().getEpisodeid());
+						}					
+					}
+				}
+			}
+		});				
+	}
+	
 	public void applicationSetVolume(String volume) {
 		final ApplicationSetVolume applicationsetvolume = new ApplicationSetVolume(client, httpUri);
 				

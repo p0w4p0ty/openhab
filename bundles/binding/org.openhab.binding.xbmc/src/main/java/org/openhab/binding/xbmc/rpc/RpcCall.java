@@ -81,7 +81,7 @@ public abstract class RpcCall {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> readJson(String json) {
+	protected Map<String, Object> readJson(String json) {
 		if (json == null)
 			return new HashMap<String, Object>();
 
@@ -96,7 +96,7 @@ public abstract class RpcCall {
 		}
 	}
 
-	private String writeJson(Map<String, Object> json) {
+	protected String writeJson(Map<String, Object> json) {
 		try {
 			return mapper.writeValueAsString(json);
 		} catch (JsonParseException e) {
@@ -114,7 +114,7 @@ public abstract class RpcCall {
 			// process any response as necessary (can be null)
 			ListenableFuture<Response> future = client.preparePost(uri)
 				.setBody(writeJson(request))
-				.setHeader("content-type", "application/json")
+				.setHeader("content-type", "application/json; charset=utf-8")
 				.setHeader("accept", "application/json")
 				.execute(new AsyncCompletionHandler<Response>() {
 					@Override

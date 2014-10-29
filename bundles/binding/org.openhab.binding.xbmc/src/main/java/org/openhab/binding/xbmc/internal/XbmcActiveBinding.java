@@ -165,6 +165,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	private boolean isInBound(String itemName) {
 		for (BindingProvider provider : providers) {
 			if (provider instanceof XbmcBindingProvider) {
@@ -292,7 +293,7 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 			if (property.equals("Player.PlayPause"))
 				connector.playerPlayPause();
 			else if (property.equals("Player.Open"))
-				connector.playerOpen(command.toString());
+				connector.playerOpenFile(command.toString());
 			else if (property.equals("Player.Stop"))			
 				connector.playerStop();
 			else if (property.equals("GUI.ShowNotification"))
@@ -307,6 +308,18 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 				connector.systemReboot();
 			else if (property.equals("Application.Volume"))
 				connector.applicationSetVolume(command.toString());
+			else if (property.equals("VideoLibrary.GetMovies"))
+				connector.videoGetMovies(command.toString());
+			else if (property.equals("VideoLibrary.GetMovieAndPlay"))
+				connector.videoGetMovies(command.toString(), true);
+			else if (property.equals("VideoLibrary.GetEpisodes"))
+				connector.videoGetEpisodes(command.toString());
+			else if (property.equals("VideoLibrary.GetEpisodesAndPlay"))
+				connector.videoGetEpisodes(command.toString(), true);
+			else if (property.equals("VideoLibrary.Search"))
+				connector.videoSearch(command.toString());
+			else if (property.equals("VideoLibrary.SearchAndPlay"))
+				connector.videoSearch(command.toString(), true);
 		} catch (Exception e) {
 			logger.error("Error handling command", e);
 		}
