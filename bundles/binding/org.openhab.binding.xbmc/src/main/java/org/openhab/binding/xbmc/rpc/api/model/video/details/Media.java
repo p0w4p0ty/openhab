@@ -6,7 +6,7 @@ import org.openhab.binding.xbmc.rpc.api.model.media.Artwork;
  * Video.Details.Media - http://kodi.wiki/view/JSON-RPC_API/v6#Video.Details.Media
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class Media extends org.openhab.binding.xbmc.rpc.api.model.video.details.Base {

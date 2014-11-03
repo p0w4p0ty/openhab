@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * Video.Details.Movie - http://kodi.wiki/view/JSON-RPC_API/v6#Video.Details.Movie
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class Movie extends File {

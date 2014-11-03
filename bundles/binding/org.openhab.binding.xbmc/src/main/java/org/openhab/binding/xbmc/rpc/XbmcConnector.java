@@ -25,6 +25,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openhab.binding.xbmc.internal.XbmcHost;
+import org.openhab.binding.xbmc.rpc.api.method.player.setSubtitle.Parameters.subtitle;
 import org.openhab.binding.xbmc.rpc.api.model.video.details.Movie;
 import org.openhab.binding.xbmc.rpc.calls.ApplicationGetProperties;
 import org.openhab.binding.xbmc.rpc.calls.ApplicationSetVolume;
@@ -42,6 +43,7 @@ import org.openhab.binding.xbmc.rpc.calls.SystemShutdown;
 import org.openhab.binding.xbmc.rpc.calls.SystemSuspend;
 import org.openhab.binding.xbmc.rpc.calls.videoLibrary.EpisodesByTVShowName;
 import org.openhab.binding.xbmc.rpc.calls.videoLibrary.MoviesByTitle;
+import org.openhab.binding.xbmc.rpc.calls.videoLibrary.SetSubtitles;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
@@ -328,6 +330,7 @@ public class XbmcConnector {
 	}
 
 	public void playerPlayPause() {
+		logger.info("XBMC Play/Pause player");
 		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, httpUri);
 		
 		activePlayers.execute(new Runnable() {
@@ -340,6 +343,7 @@ public class XbmcConnector {
 	}
 	
 	public void playerStop() {
+		logger.info("XBMC stop player");
 		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, httpUri);
 		
 		activePlayers.execute(new Runnable() {
@@ -347,6 +351,25 @@ public class XbmcConnector {
 				PlayerStop stop = new PlayerStop(client, httpUri);
 				stop.setPlayerId(activePlayers.getPlayerId());
 				stop.execute();
+			}
+		});
+	}
+	
+	public void playerSetSubtitle(String operationName){
+		logger.info("XBMC set subtitle '"+operationName+"'");
+		subtitle operationTmp = null;
+		try{
+			operationTmp = subtitle.valueOf(operationName);
+		} catch (Exception e){
+			logger.warn("Unable to parse operation name '"+operationName+"' as a setSubtitle operation, setting default: 'next'");			
+		}
+		final PlayerGetActivePlayers activePlayers = new PlayerGetActivePlayers(client, httpUri);
+		
+		final subtitle operation = operationTmp;
+		activePlayers.execute(new Runnable() {
+			public void run() {
+				final SetSubtitles subtitles = new SetSubtitles(client, httpUri, operation, activePlayers.getPlayerId());
+				subtitles.execute();
 			}
 		});
 	}
@@ -398,6 +421,7 @@ public class XbmcConnector {
 	}
 
 	public void playerOpenEpisode(int episodeid) {
+		logger.info("XBMC open Episode with id: "+episodeid);
 		final PlayerOpen playeropen = new PlayerOpen(client, httpUri);		
 		playeropen.setEpisodeid(episodeid);
 		playeropen.execute();
@@ -425,7 +449,8 @@ public class XbmcConnector {
 		videoGetMovies(title, false);
 	}
 	
-	public void videoGetMovies(String movieTitle, final boolean play){
+	public void videoGetMovies(final String movieTitle, final boolean play){
+		logger.info("XBMC search movie '"+movieTitle+"' and play: "+play);
 		final MoviesByTitle moviesByTitle = new MoviesByTitle(client, httpUri);
 		moviesByTitle.setMovieTitle(movieTitle);
 		
@@ -435,17 +460,21 @@ public class XbmcConnector {
 			public void run() {
 				if (moviesByTitle.getAll().size() <= 0){
 					// No movie found
+					logger.info("XBMC no movie found for '"+movieTitle+"'");
 					// TODO: update result
 				} else {
 					Iterator<Movie> iterFoundMovies = moviesByTitle.getAll().iterator();
 					if (moviesByTitle.getAll().size() == 1){
 						// One movie found
+						Movie movieFound = iterFoundMovies.next();
+						logger.info("XBMC one movie found for '"+movieTitle+"': '"+movieFound.getTitle()+"'");
 						// TODO: update result
 						if (play){
-							playerOpenMovie(iterFoundMovies.next().getMovieid());
+							playerOpenMovie(movieFound.getMovieid());
 						}
 					} else {
 						// Many movies found
+						logger.info("XBMC "+moviesByTitle.getAll().size()+" movies found for '"+movieTitle+"'");
 						// TODO: update result
 						if (play){
 							//TODO: select movie
@@ -454,44 +483,14 @@ public class XbmcConnector {
 				}
 			}
 		});
-		
-		/*
-		final VideoLibraryGetMovies videoLibraryGetMovies = new VideoLibraryGetMovies(client, httpUri);
-		videoLibraryGetMovies.setMovieTitle(title);
-		
-		videoLibraryGetMovies.execute(new Runnable() {
-			public void run() {
-				if (videoLibraryGetMovies.getNumMoviesFound() <= 0){
-					// No movie found
-					// TODO: update result
-				} else {
-					Iterator<Object> iterFoundMovies = videoLibraryGetMovies.getMoviesFound().iterator();
-					if (videoLibraryGetMovies.getNumMoviesFound() == 1){
-						// One movie found
-						Map<String, Object> movie = (Map<String, Object>) iterFoundMovies.next();
-						// TODO: update result
-						if (play){
-							int movieid = (Integer) movie.get("movieid");
-							playerOpenMovie(movieid);
-						}
-					} else {
-						// Many movies found
-						// TODO: update result
-						if (play){
-							//TODO: update 'select movie'
-						}
-					}
-				}
-			}
-		});
-		*/
 	}
 	
 	public void videoGetEpisodes(String tvshowTitle){
 		videoGetEpisodes(tvshowTitle, false);
 	}
 	
-	public void videoGetEpisodes(String tvshowTitle, final boolean play){
+	public void videoGetEpisodes(final String tvshowTitle, final boolean play){
+		logger.info("XBMC search TV show '"+tvshowTitle+"' and play: "+play);
 		final EpisodesByTVShowName getTVShowEpisodes = new EpisodesByTVShowName(client, httpUri);
 		getTVShowEpisodes.setTvshowTitle(tvshowTitle);
 		
@@ -501,9 +500,11 @@ public class XbmcConnector {
 				if (getTVShowEpisodes.getResult() != null){
 					if (getTVShowEpisodes.getAll().size() <= 0){
 						// No TV show episodes found
+						logger.info("XBMC no TV show found for '"+tvshowTitle+"'");
 						// TODO: update result
 					} else {
 						// TV show episodes found
+						logger.info("XBMC TV show found for '"+tvshowTitle+"'");
 						// TODO: update result
 						if (play){
 							playerOpenEpisode(getTVShowEpisodes.getNextOrLast().getEpisodeid());
@@ -519,27 +520,37 @@ public class XbmcConnector {
 	}
 	
 	public void videoSearch(final String media, final boolean play){
-		final EpisodesByTVShowName getTVShowEpisodes = new EpisodesByTVShowName(client, httpUri);
-		getTVShowEpisodes.setTvshowTitle(media);
-		
-		getTVShowEpisodes.execute(new Runnable() {
-			@Override
-			public void run() {
-				if (getTVShowEpisodes.getResult() != null){
-					if (getTVShowEpisodes.getAll().size() <= 0){
-						// No TV show episodes found
-						// TODO: update result
-						videoGetMovies(media, play);
+		logger.info("XBMC search Movie or TV show '"+media+"' and play: "+play);
+		try{
+			final EpisodesByTVShowName getTVShowEpisodes = new EpisodesByTVShowName(client, httpUri);
+			getTVShowEpisodes.setTvshowTitle(media);
+			
+			getTVShowEpisodes.execute(new Runnable() {
+				@Override
+				public void run() {
+					if (getTVShowEpisodes.getResult() != null){
+						if (getTVShowEpisodes.getAll().size() <= 0){
+							// No TV show episodes found
+							logger.info("XBMC no TV Show found for '"+media+"', searching movies...");
+							// TODO: update result
+							videoGetMovies(media, play);
+						} else {
+							// TV show episodes found
+							logger.info("XBMC TV Show found for '"+media+"'");
+							// TODO: update result
+							if (play){
+								playerOpenEpisode(getTVShowEpisodes.getNextOrLast().getEpisodeid());
+							}					
+						}
 					} else {
-						// TV show episodes found
-						// TODO: update result
-						if (play){
-							playerOpenEpisode(getTVShowEpisodes.getNextOrLast().getEpisodeid());
-						}					
+						logger.info("XBMC search Movie or TV show return no result");
 					}
 				}
-			}
-		});				
+			});	
+		} catch (Exception e){
+			logger.error("XBMC search Movie or TV show '"+media+"' and play: "+play+" ERROR ("+e.getMessage()+")", e);
+		}
+		 
 	}
 	
 	public void applicationSetVolume(String volume) {

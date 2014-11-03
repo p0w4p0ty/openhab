@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Video.Details.Episode - http://kodi.wiki/view/JSON-RPC_API/v6#Video.Details.Episode
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class Episode extends File {

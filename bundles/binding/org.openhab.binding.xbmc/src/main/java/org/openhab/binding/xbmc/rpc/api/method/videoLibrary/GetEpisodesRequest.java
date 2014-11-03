@@ -10,7 +10,7 @@ import org.openhab.binding.xbmc.rpc.api.method.videoLibrary.getEpisodes.Paramete
  * 	- ReadData
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class GetEpisodesRequest extends Method {

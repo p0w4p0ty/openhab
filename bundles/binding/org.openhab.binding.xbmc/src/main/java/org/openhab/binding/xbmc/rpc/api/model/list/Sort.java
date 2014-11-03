@@ -7,7 +7,7 @@ import org.openhab.binding.xbmc.rpc.api.model.list.sort.Order;
  * List.Sort (http://kodi.wiki/view/JSON-RPC_API/v6#List.Sort)
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class Sort {

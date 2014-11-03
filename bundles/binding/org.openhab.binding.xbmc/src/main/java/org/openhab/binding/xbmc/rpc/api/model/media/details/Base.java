@@ -4,7 +4,7 @@ package org.openhab.binding.xbmc.rpc.api.model.media.details;
  * Media.Details.Base - http://kodi.wiki/view/JSON-RPC_API/v6#Media.Details.Base
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class Base extends org.openhab.binding.xbmc.rpc.api.model.item.details.Base {

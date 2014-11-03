@@ -16,7 +16,7 @@ import com.ning.http.client.AsyncHttpClient;
  * Search for a Movie by its title
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  * 
  */
 public class MoviesByTitle extends GetMovies {

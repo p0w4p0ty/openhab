@@ -13,7 +13,7 @@ import com.ning.http.client.AsyncHttpClient;
  * http://kodi.wiki/view/JSON-RPC_API/v6#VideoLibrary.GetMovies
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  * 
  */
 public class VideoLibraryGetMovies extends RpcCall {

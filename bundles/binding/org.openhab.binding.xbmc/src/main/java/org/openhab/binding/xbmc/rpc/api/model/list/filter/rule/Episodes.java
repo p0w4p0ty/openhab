@@ -7,7 +7,7 @@ import org.openhab.binding.xbmc.rpc.api.model.list.filter.Rule;
  * List.Filter.Fields.Episodes - http://kodi.wiki/view/JSON-RPC_API/v6#List.Filter.Fields.Episodes
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class Episodes extends Rule implements org.openhab.binding.xbmc.rpc.api.model.list.filter.Episodes {

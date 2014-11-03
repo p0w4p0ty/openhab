@@ -4,7 +4,7 @@ package org.openhab.binding.xbmc.rpc.api.model.video;
  * Video.Resume - http://kodi.wiki/view/JSON-RPC_API/v6#Video.Resume
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class Resume {

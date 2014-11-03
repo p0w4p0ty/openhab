@@ -4,7 +4,7 @@ package org.openhab.binding.xbmc.rpc.api.model.media;
  * Media.Artwork - http://kodi.wiki/view/JSON-RPC_API/v6#Media.Artwork
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class Artwork {

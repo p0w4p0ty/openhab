@@ -11,7 +11,7 @@ import org.openhab.binding.xbmc.rpc.api.model.video.fields.Movie;
  * VideoLibrary.GetEpisodes Parameters - http://kodi.wiki/view/JSON-RPC_API/v6#VideoLibrary.GetEpisodes
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class Parameters {

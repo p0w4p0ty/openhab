@@ -16,7 +16,7 @@ import com.ning.http.client.AsyncHttpClient;
  * Search for Movies.
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class GetMovies extends JsonRPCCcall {
@@ -42,7 +42,7 @@ public class GetMovies extends JsonRPCCcall {
 	}
 
 	@Override
-	protected Class<?> getResultClass() {
+	protected Class<?> getResponseClass() {
 		return GetMoviesResponse.class;
 	}	
 	

@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Video.Streams - http://kodi.wiki/view/JSON-RPC_API/v6#Video.Streams
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class Streams {

@@ -44,14 +44,15 @@ public abstract class JsonRPCCcall {
 	
 	protected abstract String getJsonRequest();
 	protected abstract void processResponse(String response);
-	protected abstract Class<?> getResultClass();
+	protected abstract Class<?> getResponseClass();
 	
 	public void execute() {
 		// nothing to do on completion
 		execute(null);
 	}
 	
-	public void execute(Runnable completeHandler) {		
+	public void execute(Runnable completeHandler) {
+		logger.debug("XBMC JsonRPCCall execute");
 		try {
 			// we fire this request off asynchronously and let the completeHandler
 			// process any response as necessary (can be null)
@@ -62,6 +63,7 @@ public abstract class JsonRPCCcall {
 				.execute(new AsyncCompletionHandler<Response>() {
 					@Override
 					public Response onCompleted(Response response) throws Exception {
+						logger.debug("XBMC json response: " + response.getResponseBody());
 						Map<String, Object> json = readJson(response.getResponseBody());
 
 						// if we get an error then throw an exception to stop the 
@@ -109,7 +111,7 @@ public abstract class JsonRPCCcall {
 			return null;
 
 		try {
-			return _mapper.readValue(json, getResultClass());
+			return _mapper.readValue(json, getResponseClass());
 		} catch (JsonParseException e) {
 			throw new RpcException("Failed to parse JSON", e);
 		} catch (JsonMappingException e) {
@@ -133,7 +135,9 @@ public abstract class JsonRPCCcall {
 	
 	protected String writeJson(Object json) {
 		try {
-			return _mapper.writeValueAsString(json);
+			String jsonString = _mapper.writeValueAsString(json);
+			logger.debug("XBMC json: "+jsonString);
+			return jsonString;
 		} catch (JsonParseException e) {
 			throw new RpcException("Failed to parse JSON", e);
 		} catch (JsonMappingException e) {

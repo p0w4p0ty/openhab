@@ -16,7 +16,7 @@ import com.ning.http.client.AsyncHttpClient;
  * Search for Episodes.
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class GetEpisodes extends JsonRPCCcall {
@@ -42,7 +42,7 @@ public class GetEpisodes extends JsonRPCCcall {
 	}
 
 	@Override
-	protected Class<?> getResultClass() {
+	protected Class<?> getResponseClass() {
 		return GetEpisodesResponse.class;
 	}		
 	
@@ -76,13 +76,6 @@ public class GetEpisodes extends JsonRPCCcall {
 	 */
 	public Result getResult() {
 		return _result;
-	}
-
-	/**
-	 * @param _result the _result to set
-	 */
-	public void setResult(Result result) {
-		this._result = result;
 	}
 
 }

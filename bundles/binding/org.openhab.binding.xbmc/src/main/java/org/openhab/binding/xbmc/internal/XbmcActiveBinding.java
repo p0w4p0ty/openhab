@@ -296,6 +296,8 @@ public class XbmcActiveBinding extends AbstractActiveBinding<XbmcBindingProvider
 				connector.playerOpenFile(command.toString());
 			else if (property.equals("Player.Stop"))			
 				connector.playerStop();
+			else if (property.equals("Player.SetSubtitle"))			
+				connector.playerSetSubtitle(command.toString());
 			else if (property.equals("GUI.ShowNotification"))
 				connector.showNotification("openHAB", command.toString());
 			else if (property.equals("System.Shutdown") && command == OnOffType.OFF)

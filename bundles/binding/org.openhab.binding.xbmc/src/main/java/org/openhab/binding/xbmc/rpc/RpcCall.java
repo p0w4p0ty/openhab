@@ -98,7 +98,9 @@ public abstract class RpcCall {
 
 	protected String writeJson(Map<String, Object> json) {
 		try {
-			return mapper.writeValueAsString(json);
+			String jsonString = mapper.writeValueAsString(json);
+			logger.debug("XBMC rpc: "+jsonString);
+			return jsonString;
 		} catch (JsonParseException e) {
 			throw new RpcException("Failed to parse JSON", e);
 		} catch (JsonMappingException e) {
@@ -119,6 +121,7 @@ public abstract class RpcCall {
 				.execute(new AsyncCompletionHandler<Response>() {
 					@Override
 					public Response onCompleted(Response response) throws Exception {
+						logger.debug("XBMC json response: " + response.getResponseBody());
 						Map<String, Object> json = readJson(response.getResponseBody());
 
 						// if we get an error then throw an exception to stop the 

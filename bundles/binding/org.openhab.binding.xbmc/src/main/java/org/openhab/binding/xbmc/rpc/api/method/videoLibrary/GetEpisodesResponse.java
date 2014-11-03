@@ -4,10 +4,10 @@ import org.openhab.binding.xbmc.rpc.api.method.Method;
 import org.openhab.binding.xbmc.rpc.api.method.videoLibrary.getEpisodes.Result;
 
 /**
- * VideoLibrary.GetEpisodes - http://kodi.wiki/view/JSON-RPC_API/v6#VideoLibrary.GetEpisodes
+ * VideoLibrary.GetEpisodes Response - http://kodi.wiki/view/JSON-RPC_API/v6#VideoLibrary.GetEpisodes
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class GetEpisodesResponse extends Method {
@@ -15,13 +15,15 @@ public class GetEpisodesResponse extends Method {
 	private Result _result;
 	
 	/**
-	 * 
+	 * VideoLibrary.GetEpisodes Response
 	 */
 	public GetEpisodesResponse() {
 		super();
 	}
 
 	/**
+	 * VideoLibrary.GetEpisodes Response
+	 * 
 	 * @param _result
 	 */
 	public GetEpisodesResponse(Result result) {

@@ -10,7 +10,7 @@ import org.openhab.binding.xbmc.rpc.api.model.video.Streams;
  * Video.Details.File - http://kodi.wiki/view/JSON-RPC_API/v6#Video.Details.File
  * 
  * @author p0w4p0ty
- * @since 1.7.0
+ * @since 1.6.0
  *
  */
 public class File extends org.openhab.binding.xbmc.rpc.api.model.video.details.Item {
